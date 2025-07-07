@@ -30,8 +30,13 @@ jobs:
           node-version: '18'
           registry-url: 'https://registry.npmjs.org'
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Configure Git
         run: |
@@ -41,7 +46,7 @@ jobs:
       - name: Bump version
         run: |
           VERSION_TYPE=${{ github.event.inputs.version_type || 'patch' }}
-          npm version $VERSION_TYPE
+          pnpm version $VERSION_TYPE
 
       - name: Push changes
         run: |
@@ -49,6 +54,6 @@ jobs:
           git push origin --tags
 
       - name: Publish to NPM
-        run: npm publish --access public
+        run: pnpm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
