@@ -21,9 +21,9 @@ npm install -D eslint @eslint/js typescript-eslint globals
 Create eslint.config.js:
 
 ```bash
-import config from '@ktsierra/eslint-config'
+import baseConfig from '@ktsierra/eslint-config'
 
-export default config
+export default baseConfig() // Or baseConfig('./tsconfig.custom.json')
 ```
 
 ## React Projects
@@ -35,9 +35,9 @@ npm install -D eslint @eslint/js typescript-eslint eslint-plugin-react eslint-pl
 Create eslint.config.js:
 
 ```bash
-import config from '@ktsierra/eslint-config/react'
+import reactConfig from '@ktsierra/eslint-config/react'
 
-export default config
+export default reactConfig() // Or reactConfig('./tsconfig.custom.json')
 ```
 
 ## React Native Projects
@@ -49,9 +49,9 @@ npm install -D eslint @eslint/js typescript-eslint eslint-plugin-react eslint-pl
 Create eslint.config.js:
 
 ```bash
-import config from '@ktsierra/eslint-config/react-native'
+import reactNativeConfig from '@ktsierra/eslint-config/react-native'
 
-export default config
+export default reactNativeConfig() // Or reactNativeConfig('./tsconfig.custom.json')
 ```
 
 ## Custom Configuration
@@ -59,10 +59,10 @@ export default config
 You can extend any configuration:
 
 ```bash
-import baseConfig from '@ktsierra/eslint-config/react'
+import reactConfig from '@ktsierra/eslint-config/react'
 
 export default [
-  ...baseConfig,
+  ...reactConfig(), // Or reactConfig('./tsconfig.custom.json')
   {
     rules: {
       // Your custom rules
