@@ -1,6 +1,6 @@
 {
   "name": "@ktsierra/eslint-config",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "My personal ESLint configurations for TypeScript projects",
   "main": "index.js",
   "type": "module",
@@ -9,7 +9,12 @@
     "./react": "./react.js",
     "./react-native": "./react-native.js"
   },
-  "keywords": ["eslint", "config", "typescript", "react"],
+  "keywords": [
+    "eslint",
+    "config",
+    "typescript",
+    "react"
+  ],
   "author": "Jose Sierra",
   "license": "MIT",
   "peerDependencies": {
