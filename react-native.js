@@ -1,12 +1,14 @@
 import reactConfig from "./react.js";
 import reactNative from "eslint-plugin-react-native";
 
+
 /**
  * @param {string|string[]} projectPaths - One or more tsconfig paths (e.g., './tsconfig.app.json', './tsconfig.json')
  */
 export default function reactNativeConfig(projectPaths) {
   return [
     ...reactConfig(projectPaths),
+        
     {
       files: ["**/*.{ts,tsx,js,jsx}"],
       plugins: {

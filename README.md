@@ -62,7 +62,7 @@ You can extend any configuration:
 import reactConfig from '@ktsierra/eslint-config/react'
 
 export default [
-  ...reactConfig(), // Or reactConfig('./tsconfig.custom.json')
+  reactConfig(), // Or reactConfig('./tsconfig.custom.json')
   {
     rules: {
       // Your custom rules
