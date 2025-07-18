@@ -40,6 +40,7 @@ export default function reactConfig(projectPaths) {
         // Your custom React rules
         "react/prop-types": "off", // We use TypeScript
         "react/react-in-jsx-scope": "off", // Not needed in React 17+
+        "react/self-closing-comp": "warn",
       },
     },
   ];
