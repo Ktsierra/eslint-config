@@ -10,21 +10,35 @@ export default function baseConfig(projectPaths = "./tsconfig.json") {
 
   return tseslint.config(
     { ignores: ["dist", "build", "node_modules"] },
+
+    // Configuration for all JS/TS/JSX files (general parsing and non-type-aware rules)
     {
+      files: ["**/*.{ts,tsx,js,jsx}"], // Apply to all relevant files
       extends: [
-        js.configs.recommended,
-        ...tseslint.configs.strictTypeChecked,
-        ...tseslint.configs.stylisticTypeChecked,
+        js.configs.recommended, // General JavaScript rules
       ],
-      files: ["src/**/*.{ts,tsx}", "test/**/*.{ts,tsx}"],
       languageOptions: {
+        parser: tseslint.parser, // Use TypeScript parser for all
         parserOptions: {
           project: projects,
           tsconfigRootDir: process.cwd(),
+          ecmaVersion: 2022,
+          sourceType: "module", // Important for modern JS/TS
         },
-        ecmaVersion: 2022,
         globals: globals.node,
       },
+      rules: {
+        // Add any general rules that apply to both JS and TS here
+      },
+    },
+
+    // Configuration for TypeScript files (type-aware rules)
+    {
+      files: ["**/*.{ts,tsx}"], // Only apply type-aware rules to TS/TSX files
+      extends: [
+        ...tseslint.configs.strictTypeChecked,
+        ...tseslint.configs.stylisticTypeChecked,
+      ],
       rules: {
         "@typescript-eslint/no-unused-vars": [
           "error",
