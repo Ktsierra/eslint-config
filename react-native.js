@@ -1,5 +1,6 @@
-import reactConfig from "./react.js";
+import { reactBaseConfig } from "./react.js";
 import reactNative from "eslint-plugin-react-native";
+import globals from "globals";
 
 
 /**
@@ -7,15 +8,17 @@ import reactNative from "eslint-plugin-react-native";
  */
 export default function reactNativeConfig(projectPaths) {
   return [
-    ...reactConfig(projectPaths),
+    ...reactBaseConfig(projectPaths),
         
     {
       files: ["**/*.{ts,tsx,js,jsx}"],
+      languageOptions: {
+        globals: globals["react-native"],
+      },
       plugins: {
         "react-native": reactNative,
       },
       rules: {
-        ...reactNative.configs.recommended.rules,
         "react-native/no-unused-styles": "error",
         "react-native/split-platform-components": "error",
         "react-native/no-inline-styles": "warn",
