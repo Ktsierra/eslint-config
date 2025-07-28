@@ -7,7 +7,7 @@
   "exports": {
     ".": "./index.js",
     "./react": "./react.js",
-    "./reactnative": "./reactnative.js"
+    "./react-native": "./react-native.js"
   },
   "keywords": [
     "eslint",
@@ -46,7 +46,7 @@
   "files": [
     "index.js",
     "react.js",
-    "reactnative.js",
+    "react-native.js",
     "README.md"
   ]
 }
