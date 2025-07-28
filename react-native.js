@@ -1,6 +1,5 @@
 import { reactBaseConfig } from "./react.js";
-import reactNative from "eslint-plugin-react-native";
-import { fixupPluginRules } from "@eslint/compat";
+import * as reactNative from "eslint-plugin-react-native";
 import globals from "globals";
 
 /**
@@ -11,25 +10,16 @@ export default function reactNativeConfig(projectPaths) {
     ...reactBaseConfig(projectPaths),
     {
       files: ["**/*.{ts,tsx,js,jsx}"],
+      plugins: {
+        "react-native": reactNative,
+      },
       languageOptions: {
         globals: {
           ...globals.browser,
-          ...globals["react-native"],
+          ...reactNative.environments["react-native"].globals,
         },
       },
-      plugins: {
-        // Use fixupPluginRules to make the plugin compatible with ESLint 9 flat config
-        "react-native": fixupPluginRules(reactNative),
-      },
-      rules: {
-        // Manually specify the React Native rules you want to enable
-        "react-native/no-unused-styles": "error",
-        "react-native/split-platform-components": "error",
-        "react-native/no-inline-styles": "warn",
-        "react-native/no-color-literals": "warn",
-        "react-native/no-raw-text": "error",
-        "react-native/no-single-element-style-arrays": "error",
-      },
+      rules: reactNative.configs.all.rules,
     },
   ];
 }
