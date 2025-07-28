@@ -3,7 +3,8 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 
 /**
- * @param {string|string[]} projectPaths - One or more tsconfig paths (e.g., './tsconfig.app.json', './tsconfig.json')
+ * @param {string|string[]} [projectPaths="./tsconfig.json"] - One or more tsconfig paths.
+ * @returns {import('eslint').Linter.FlatConfig[]} An array of ESLint flat config objects.
  */
 export default function baseConfig(projectPaths = "./tsconfig.json") {
   const projects = Array.isArray(projectPaths) ? projectPaths : [projectPaths];
