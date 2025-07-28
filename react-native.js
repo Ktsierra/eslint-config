@@ -1,7 +1,6 @@
 import { reactBaseConfig } from "./react.js";
-import reactNative from "eslint-plugin-react-native";
+import * as reactNative from "eslint-plugin-react-native";
 import globals from "globals";
-
 
 /**
  * @param {string|string[]} projectPaths - One or more tsconfig paths (e.g., './tsconfig.app.json', './tsconfig.json')
@@ -9,7 +8,7 @@ import globals from "globals";
 export default function reactNativeConfig(projectPaths) {
   return [
     ...reactBaseConfig(projectPaths),
-        
+
     {
       files: ["**/*.{ts,tsx,js,jsx}"],
       languageOptions: {
