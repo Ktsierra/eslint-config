@@ -18,6 +18,7 @@
   "author": "Jose Sierra",
   "license": "MIT",
   "peerDependencies": {
+    "@eslint/compat": "^1.0.0",
     "@eslint/js": "^9.0.0",
     "eslint": "^9.0.0",
     "globals": "^16.0.0",
@@ -38,6 +39,7 @@
     }
   },
   "dependencies": {
+    "@eslint/compat": "^1.0.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
