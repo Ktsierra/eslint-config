@@ -18,7 +18,7 @@ For Node.js/backend TypeScript projects:
 npm install -D eslint @eslint/js typescript-eslint globals
 ```
 
-Create eslint.config.js:
+Create eslint.config.mjs:
 
 ```bash
 import baseConfig from '@ktsierra/eslint-config'
@@ -32,7 +32,7 @@ export default baseConfig() // Or baseConfig('./tsconfig.custom.json')
 npm install -D eslint @eslint/js typescript-eslint eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh globals
 ```
 
-Create eslint.config.js:
+Create eslint.config.mjs:
 
 ```bash
 import reactConfig from '@ktsierra/eslint-config/react'
@@ -46,7 +46,7 @@ export default reactConfig() // Or reactConfig('./tsconfig.custom.json')
 npm install -D eslint @eslint/js typescript-eslint eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh eslint-plugin-react-native globals
 ```
 
-Create eslint.config.js:
+Create eslint.config.mjs:
 
 ```bash
 import reactNativeConfig from '@ktsierra/eslint-config/react-native'
