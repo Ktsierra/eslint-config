@@ -31,7 +31,7 @@ export function reactBaseConfig(projectPaths) {
         "react/self-closing-comp": "warn",
         // TypeScript rule overrides
         "@typescript-eslint/no-unused-vars": "off",
-        "@typescript-eslint/no-confusing-void-expressions": [
+        "@typescript-eslint/no-confusing-void-expression": [
           "error",
           {
             ignoreArrowShorthand: true,
@@ -72,7 +72,7 @@ export default function reactConfig(projectPaths) {
         ],
         // TypeScript rule overrides
         "@typescript-eslint/no-unused-vars": "off",
-        "@typescript-eslint/no-confusing-void-expressions": [
+        "@typescript-eslint/no-confusing-void-expression": [
           "error",
           {
             ignoreArrowShorthand: true,

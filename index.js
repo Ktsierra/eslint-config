@@ -38,7 +38,7 @@ export default function baseConfig(projectPaths = "./tsconfig.json") {
       },
       rules: {
         "@typescript-eslint/no-unused-vars": "off",
-        "@typescript-eslint/no-confusing-void-expressions": [
+        "@typescript-eslint/no-confusing-void-expression": [
           "error",
           {
             ignoreArrowShorthand: true,
