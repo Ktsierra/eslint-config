@@ -36,14 +36,13 @@ export default function baseConfig(projectPaths = "./tsconfig.json") {
           tsconfigRootDir: process.cwd(),
         },
       },
+    },
+
+    // Rule overrides in a separate config object
+    {
+      files: ["**/*.{ts,tsx}"],
       rules: {
-        "@typescript-eslint/no-unused-vars": [
-          "off",
-          {
-            argsIgnorePattern: "^_",
-            varsIgnorePattern: "^_",
-          },
-        ],
+        "@typescript-eslint/no-unused-vars": "off",
         "@typescript-eslint/no-confusing-void-expressions": [
           "error",
           {
