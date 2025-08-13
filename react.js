@@ -10,7 +10,6 @@ import globals from "globals";
  */
 export function reactBaseConfig(projectPaths) {
   return [
-    ...baseConfig(projectPaths),
     {
       files: ["**/*.{ts,tsx,js,jsx}"],
       settings: {
@@ -32,9 +31,9 @@ export function reactBaseConfig(projectPaths) {
         "react/self-closing-comp": "warn",
       },
     },
+    ...baseConfig(projectPaths),
   ];
 }
-
 
 /**
  * @param {string|string[]} [projectPaths="./tsconfig.json"] - One or more tsconfig paths.
@@ -42,8 +41,6 @@ export function reactBaseConfig(projectPaths) {
  */
 export default function reactConfig(projectPaths) {
   return [
-    ...reactBaseConfig(projectPaths),
-        
     {
       files: ["**/*.{ts,tsx,js,jsx}"],
       languageOptions: {
@@ -59,5 +56,6 @@ export default function reactConfig(projectPaths) {
         ],
       },
     },
+    ...reactBaseConfig(projectPaths),
   ];
 }

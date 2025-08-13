@@ -8,7 +8,6 @@ import globals from "globals";
  */
 export default function reactNativeConfig(projectPaths) {
   return [
-    ...reactBaseConfig(projectPaths),
     {
       files: ["**/*.{ts,tsx,js,jsx}"],
       plugins: {
@@ -30,5 +29,6 @@ export default function reactNativeConfig(projectPaths) {
         },
       },
     },
+    ...reactBaseConfig(projectPaths),
   ];
 }
