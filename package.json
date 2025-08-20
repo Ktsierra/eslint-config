@@ -1,6 +1,6 @@
 {
   "name": "@ktsierra/eslint-config",
-  "version": "2.1.12",
+  "version": "2.2.0",
   "description": "My personal ESLint configurations for TypeScript projects",
   "main": "index.js",
   "type": "module",
