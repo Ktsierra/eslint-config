@@ -29,22 +29,7 @@ export function reactBaseConfig(projectPaths) {
         "react/prop-types": "off",
         "react/react-in-jsx-scope": "off",
         "react/self-closing-comp": "warn",
-        // TypeScript rule overrides
-        "@typescript-eslint/no-unused-vars": "off",
-        "@typescript-eslint/no-confusing-void-expression": [
-          "error",
-          {
-            ignoreArrowShorthand: true,
-            ignoreVoidOperator: false,
-          },
-        ],
-        "@typescript-eslint/consistent-type-imports": [
-          "error",
-          {
-            prefer: "type-imports",
-            fixStyle: "inline-type-imports",
-          },
-        ],
+        // TypeScript rules are defined in baseConfig (tseslint.config)
       },
     },
     ...baseConfig(projectPaths),
@@ -70,22 +55,7 @@ export default function reactConfig(projectPaths) {
           "warn",
           { allowConstantExport: true },
         ],
-        // TypeScript rule overrides
-        "@typescript-eslint/no-unused-vars": "off",
-        "@typescript-eslint/no-confusing-void-expression": [
-          "error",
-          {
-            ignoreArrowShorthand: true,
-            ignoreVoidOperator: false,
-          },
-        ],
-        "@typescript-eslint/consistent-type-imports": [
-          "error",
-          {
-            prefer: "type-imports",
-            fixStyle: "inline-type-imports",
-          },
-        ],
+        // TypeScript rules are defined in baseConfig (tseslint.config)
       },
     },
     ...reactBaseConfig(projectPaths),

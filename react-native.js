@@ -15,22 +15,7 @@ export default function reactNativeConfig(projectPaths) {
       },
       rules: {
         ...reactNative.configs.all.rules,
-        // TypeScript rule overrides
-        "@typescript-eslint/no-unused-vars": "off",
-        "@typescript-eslint/no-confusing-void-expression": [
-          "error",
-          {
-            ignoreArrowShorthand: true,
-            ignoreVoidOperator: false,
-          },
-        ],
-        "@typescript-eslint/consistent-type-imports": [
-          "error",
-          {
-            prefer: "type-imports",
-            fixStyle: "inline-type-imports",
-          },
-        ],
+        // TypeScript rules are defined in baseConfig (tseslint.config)
       },
       languageOptions: {
         parserOptions: {
