@@ -5,9 +5,18 @@
   "main": "index.js",
   "type": "module",
   "exports": {
-    ".": "./index.js",
-    "./react": "./react.js",
-    "./react-native": "./react-native.js"
+    ".": {
+      "import": "./index.js",
+      "types": "./index.d.ts"
+    },
+    "./react": {
+      "import": "./react.js",
+      "types": "./react.d.ts"
+    },
+    "./react-native": {
+      "import": "./react-native.js",
+      "types": "./react-native.d.ts"
+    }
   },
   "keywords": [
     "eslint",
@@ -17,11 +26,19 @@
   ],
   "author": "Jose Sierra",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ktsierra/eslint-config-ktsierra.git"
+  },
   "peerDependencies": {
     "@eslint/js": "^9.0.0",
     "eslint": "^9.0.0",
     "globals": "^14.0.0",
-    "typescript-eslint": "^8.0.0"
+    "typescript-eslint": "^8.0.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "eslint-plugin-react-native": "^5.0.0"
   },
   "peerDependenciesMeta": {
     "eslint-plugin-react": {
@@ -37,16 +54,13 @@
       "optional": true
     }
   },
-  "dependencies": {
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.20",
-    "eslint-plugin-react-native": "^5.0.0"
-  },
   "files": [
     "index.js",
+    "index.d.ts",
     "react.js",
+    "react.d.ts",
     "react-native.js",
+    "react-native.d.ts",
     "README.md"
   ]
 }

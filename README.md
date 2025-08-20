@@ -20,7 +20,7 @@ Then, create your `eslint.config.mjs` file and import the desired configuration:
 
 ## Base TypeScript Configuration
 
-```bash
+```js
 import baseConfig from '@ktsierra/eslint-config'
 
 export default baseConfig() // Or baseConfig('./tsconfig.custom.json')
@@ -28,7 +28,7 @@ export default baseConfig() // Or baseConfig('./tsconfig.custom.json')
 
 ## React Projects
 
-```bash
+```js
 import reactConfig from '@ktsierra/eslint-config/react'
 
 export default reactConfig() // Or reactConfig('./tsconfig.custom.json')
@@ -36,7 +36,7 @@ export default reactConfig() // Or reactConfig('./tsconfig.custom.json')
 
 ## React Native Projects
 
-```bash
+```js
 import reactNativeConfig from '@ktsierra/eslint-config/react-native'
 
 export default reactNativeConfig() // Or reactNativeConfig('./tsconfig.custom.json')
@@ -46,7 +46,7 @@ export default reactNativeConfig() // Or reactNativeConfig('./tsconfig.custom.js
 
 You can extend any configuration:
 
-```bash
+```js
 import reactConfig from '@ktsierra/eslint-config/react'
 
 export default [

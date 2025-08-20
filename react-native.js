@@ -26,7 +26,9 @@ export default function reactNativeConfig(projectPaths) {
         globals: {
           ...globals.browser,
           ...globals.node,
-          ...reactNative.environments["react-native"].globals,
+          __DEV__: false,
+          __METRO_GLOBAL_PREFIX__: false,
+          HermesInternal: false,
         },
       },
     },
