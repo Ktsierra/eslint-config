@@ -34,13 +34,20 @@
     "@eslint/js": "^9.0.0",
     "eslint": "^9.0.0",
     "globals": "^14.0.0",
-    "typescript-eslint": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "eslint-plugin-react-native": "^5.0.0"
   },
   "peerDependenciesMeta": {
+    "@typescript-eslint/parser": {
+      "optional": false
+    },
+    "@typescript-eslint/eslint-plugin": {
+      "optional": false
+    },
     "eslint-plugin-react": {
       "optional": true
     },
