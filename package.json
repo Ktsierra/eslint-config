@@ -42,12 +42,6 @@
     "eslint-plugin-react-native": "^5.0.0"
   },
   "peerDependenciesMeta": {
-    "@typescript-eslint/parser": {
-      "optional": false
-    },
-    "@typescript-eslint/eslint-plugin": {
-      "optional": false
-    },
     "eslint-plugin-react": {
       "optional": true
     },
