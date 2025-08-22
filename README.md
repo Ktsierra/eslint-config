@@ -60,6 +60,43 @@ export default [
 ]
 ```
 
+## Peer dependencies
+
+This package declares several peer dependencies which are not automatically installed by package managers. Install the required peer dependencies in your project to use the configs below.
+
+Required (for TypeScript linting):
+
+- eslint
+- @eslint/js
+- @typescript-eslint/parser
+- @typescript-eslint/eslint-plugin
+- globals
+
+Optional (for React / React Native projects):
+
+- eslint-plugin-react
+- eslint-plugin-react-hooks
+- eslint-plugin-react-refresh
+- eslint-plugin-react-native
+
+Install all recommended peer dependencies (pnpm):
+
+```bash
+pnpm add -D eslint @eslint/js @typescript-eslint/parser @typescript-eslint/eslint-plugin globals eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh eslint-plugin-react-native
+```
+
+npm:
+
+```bash
+npm install --save-dev eslint @eslint/js @typescript-eslint/parser @typescript-eslint/eslint-plugin globals eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh eslint-plugin-react-native
+```
+
+yarn:
+
+```bash
+yarn add -D eslint @eslint/js @typescript-eslint/parser @typescript-eslint/eslint-plugin globals eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh eslint-plugin-react-native
+```
+
 ## Available Configurations
 
 | Package Name                             | Description                   |
