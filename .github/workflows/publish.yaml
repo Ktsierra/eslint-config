@@ -6,28 +6,121 @@ on:
   workflow_dispatch:
     inputs:
       version_type:
-        description: 'Version bump type'
-        required: true
-        default: 'patch'
+        description: 'Version bump type (manual). Choose "none" to skip bump.'
+        required: false
+        default: 'none'
         type: choice
         options:
+          - none
           - patch
           - minor
           - major
+      publish_only:
+        description: 'Publish current version without bump (manual)'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   id-token: write
   contents: write
 
 jobs:
-  publish:
+  bump:
     runs-on: ubuntu-latest
+    outputs:
+      bumped: ${{ steps.determine_bump.outputs.bump_needed }}
+      bump_type: ${{ steps.determine_bump.outputs.bump_type }}
+      new_version: ${{ steps.get_version.outputs.new_version }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Determine whether to bump version
+        id: determine_bump
+        env:
+          VERSION_TYPE: ${{ github.event.inputs.version_type }}
+          PUBLISH_ONLY: ${{ github.event.inputs.publish_only }}
+        run: |
+          set -euo pipefail
+          bump_needed=false
+          bump_type=""
+          echo "event: $GITHUB_EVENT_NAME"
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            echo "manual run: VERSION_TYPE=${VERSION_TYPE}, PUBLISH_ONLY=${PUBLISH_ONLY}"
+            if [ "${PUBLISH_ONLY}" = "true" ]; then
+              bump_needed=false
+            elif [ -n "${VERSION_TYPE}" ] && [ "${VERSION_TYPE}" != "none" ]; then
+              bump_needed=true
+              bump_type=${VERSION_TYPE}
+            fi
+          else
+            if [ -f "$GITHUB_EVENT_PATH" ]; then
+              msgs=$(python - <<'PY'
+import json,os
+p=json.load(open(os.environ['GITHUB_EVENT_PATH']))
+msgs=[]
+for c in p.get('commits',[]):
+    msgs.append(c.get('message',''))
+print("\n".join(msgs))
+PY
+)
+              echo "commit messages:"
+              echo "$msgs"
+              if echo "$msgs" | grep -q '#major'; then
+                bump_needed=true
+                bump_type=major
+              elif echo "$msgs" | grep -q '#minor'; then
+                bump_needed=true
+                bump_type=minor
+              elif echo "$msgs" | grep -q '#patch'; then
+                bump_needed=true
+                bump_type=patch
+              else
+                bump_needed=false
+              fi
+            fi
+          fi
+
+          echo "bump_needed=$bump_needed" >> $GITHUB_OUTPUT
+          echo "bump_type=$bump_type" >> $GITHUB_OUTPUT
+
+      - name: Run automated version bump
+        if: steps.determine_bump.outputs.bump_needed == 'true'
+        uses: phips28/gh-action-bump-version@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          version-type: ${{ steps.determine_bump.outputs.bump_type }}
+          minor-wording: '#minor'
+          major-wording: '#major'
+          patch-wording: '#patch'
+          commit-message: 'chore(release): bump version to {{version}} [skip ci]'
+
+      - name: Get current package version
+        id: get_version
+        run: |
+          echo "new_version=$(node -p \"require('./package.json').version\")" >> $GITHUB_OUTPUT
+
+  publish:
+    needs: bump
+    runs-on: ubuntu-latest
+    if: needs.bump.outputs.bumped == 'true' || (github.event_name == 'workflow_dispatch' && github.event.inputs.publish_only == 'true')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Ensure we have latest main (including bump commit)
+        run: |
+          git fetch origin main --tags
+          git checkout main || git checkout -b main
+          git reset --hard origin/main
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -43,21 +136,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Configure Git
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-
-      - name: Automated Version Bump
-        uses: phips28/gh-action-bump-version@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          default: patch
-          minor-wording: '#minor'
-          major-wording: '#major'
-          version-type: ${{ github.event.inputs.version_type }}
+      - name: Show version to publish
+        run: node -p "require('./package.json').version"
 
       - name: Publish to NPM
         run: pnpm publish --access public
-        # Rely on GitHub Actions OIDC (Trusted Publishing) — no long-lived NPM token required
