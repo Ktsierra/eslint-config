@@ -66,4 +66,5 @@ jobs:
           git add package.json pnpm-lock.yaml
           git commit -m "ci: bump version [${{ steps.bump.outputs.type }}]"
           git tag "v$(node -p "require('./package.json').version")"
-          git push origin main --follow-tags
+          git push origin main
+          git push origin --tags
