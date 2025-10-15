@@ -89,7 +89,8 @@ jobs:
       - name: Get current package version
         id: get_version
         run: |
-          echo "new_version=$(node -p \"require('./package.json').version\")" >> $GITHUB_OUTPUT
+          new_version=$(sed -n 's/.*"version":[[:space:]]*"\([^"]*\)".*/\1/p' package.json | head -n1)
+          echo "new_version=$new_version" >> $GITHUB_OUTPUT
 
   publish:
     needs: bump
