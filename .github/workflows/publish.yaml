@@ -16,6 +16,7 @@ on:
           - major
 
 permissions:
+  id-token: write
   contents: write
 
 jobs:
@@ -26,6 +27,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -54,8 +56,8 @@ jobs:
           default: patch
           minor-wording: '#minor'
           major-wording: '#major'
+          version-type: ${{ github.event.inputs.version_type }}
 
       - name: Publish to NPM
         run: pnpm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        # Rely on GitHub Actions OIDC (Trusted Publishing) — no long-lived NPM token required
