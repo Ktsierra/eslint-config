@@ -9,17 +9,10 @@ on:
         description: 'Version bump type (manual). Choose "none" to skip bump.'
         required: false
         default: 'none'
-        type: choice
-        options:
-          - none
-          - patch
-          - minor
-          - major
       publish_only:
         description: 'Publish current version without bump (manual)'
         required: false
-        default: false
-        type: boolean
+        default: 'false'
 
 permissions:
   id-token: write
@@ -44,6 +37,7 @@ jobs:
         env:
           VERSION_TYPE: ${{ github.event.inputs.version_type }}
           PUBLISH_ONLY: ${{ github.event.inputs.publish_only }}
+          GITHUB_EVENT_PATH: ${{ github.event_path }}
         run: |
           set -euo pipefail
           bump_needed=false
@@ -51,7 +45,7 @@ jobs:
           echo "event: $GITHUB_EVENT_NAME"
           if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
             echo "manual run: VERSION_TYPE=${VERSION_TYPE}, PUBLISH_ONLY=${PUBLISH_ONLY}"
-            if [ "${PUBLISH_ONLY}" = "true" ]; then
+            if [ "${PUBLISH_ONLY}" = "true" ] || [ "${PUBLISH_ONLY}" = "True" ]; then
               bump_needed=false
             elif [ -n "${VERSION_TYPE}" ] && [ "${VERSION_TYPE}" != "none" ]; then
               bump_needed=true
@@ -59,15 +53,7 @@ jobs:
             fi
           else
             if [ -f "$GITHUB_EVENT_PATH" ]; then
-              msgs=$(python - <<'PY'
-import json,os
-p=json.load(open(os.environ['GITHUB_EVENT_PATH']))
-msgs=[]
-for c in p.get('commits',[]):
-    msgs.append(c.get('message',''))
-print("\n".join(msgs))
-PY
-)
+              msgs=$(jq -r '.commits // [] | .[].message' "$GITHUB_EVENT_PATH" 2>/dev/null || true)
               echo "commit messages:"
               echo "$msgs"
               if echo "$msgs" | grep -q '#major'; then
@@ -140,4 +126,6 @@ PY
         run: node -p "require('./package.json').version"
 
       - name: Publish to NPM
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: pnpm publish --access public
