@@ -22,11 +22,5 @@ jobs:
           corepack prepare pnpm@latest --activate
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Debug npm auth
-        run: |
-          cat $NPM_CONFIG_USERCONFIG || true
-          npm whoami || echo "NOT AUTHENTICATED"
-      - name: Publish
-        env:
-          NPM_CONFIG_USERCONFIG: ${{ env.NPM_CONFIG_USERCONFIG }}
-        run: pnpm publish --no-git-checks --access public
+      - name: Publish (OIDC)
+        run: npm publish --access public
