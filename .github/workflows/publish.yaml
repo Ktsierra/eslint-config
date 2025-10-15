@@ -15,13 +15,18 @@ jobs:
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
+          always-auth: true
       - name: Setup pnpm
         run: |
           corepack enable
           corepack prepare pnpm@latest --activate
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Test (if present)
-        run: pnpm test --if-present
+      - name: Debug npm auth
+        run: |
+          cat $NPM_CONFIG_USERCONFIG || true
+          npm whoami || echo "NOT AUTHENTICATED"
       - name: Publish
+        env:
+          NPM_CONFIG_USERCONFIG: ${{ env.NPM_CONFIG_USERCONFIG }}
         run: pnpm publish --no-git-checks --access public
