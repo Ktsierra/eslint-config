@@ -1,132 +1,49 @@
-name: Publish to NPM
+name: Publish Package
 
 on:
   push:
-    branches: [main]
-  workflow_dispatch:
-    inputs:
-      version_type:
-        description: 'Version bump type (manual). Choose "none" to skip bump.'
-        required: false
-        default: 'none'
-      publish_only:
-        description: 'Publish current version without bump (manual)'
-        required: false
-        default: 'false'
+    tags:
+      - 'v*'
 
 permissions:
-  id-token: write
-  contents: write
+  id-token: write  # Required for OIDC
+  contents: read
 
 jobs:
-  bump:
-    runs-on: ubuntu-latest
-    outputs:
-      bumped: ${{ steps.determine_bump.outputs.bump_needed }}
-      bump_type: ${{ steps.determine_bump.outputs.bump_type }}
-      new_version: ${{ steps.get_version.outputs.new_version }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Determine whether to bump version
-        id: determine_bump
-        env:
-          VERSION_TYPE: ${{ github.event.inputs.version_type }}
-          PUBLISH_ONLY: ${{ github.event.inputs.publish_only }}
-          GITHUB_EVENT_PATH: ${{ github.event_path }}
-        run: |
-          set -euo pipefail
-          bump_needed=false
-          bump_type=""
-          echo "event: $GITHUB_EVENT_NAME"
-          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
-            echo "manual run: VERSION_TYPE=${VERSION_TYPE}, PUBLISH_ONLY=${PUBLISH_ONLY}"
-            if [ "${PUBLISH_ONLY}" = "true" ] || [ "${PUBLISH_ONLY}" = "True" ]; then
-              bump_needed=false
-            elif [ -n "${VERSION_TYPE}" ] && [ "${VERSION_TYPE}" != "none" ]; then
-              bump_needed=true
-              bump_type=${VERSION_TYPE}
-            fi
-          else
-            if [ -f "$GITHUB_EVENT_PATH" ]; then
-              msgs=$(jq -r '.commits // [] | .[].message' "$GITHUB_EVENT_PATH" 2>/dev/null || true)
-              echo "commit messages:"
-              echo "$msgs"
-              if echo "$msgs" | grep -q '#major'; then
-                bump_needed=true
-                bump_type=major
-              elif echo "$msgs" | grep -q '#minor'; then
-                bump_needed=true
-                bump_type=minor
-              elif echo "$msgs" | grep -q '#patch'; then
-                bump_needed=true
-                bump_type=patch
-              else
-                bump_needed=false
-              fi
-            fi
-          fi
-
-          echo "bump_needed=$bump_needed" >> $GITHUB_OUTPUT
-          echo "bump_type=$bump_type" >> $GITHUB_OUTPUT
-
-      - name: Run automated version bump
-        if: steps.determine_bump.outputs.bump_needed == 'true'
-        uses: phips28/gh-action-bump-version@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          version-type: ${{ steps.determine_bump.outputs.bump_type }}
-          minor-wording: '#minor'
-          major-wording: '#major'
-          patch-wording: '#patch'
-          commit-message: 'chore(release): bump version to {{version}} [skip ci]'
-
-      - name: Get current package version
-        id: get_version
-        run: |
-          new_version=$(sed -n 's/.*"version":[[:space:]]*"\([^"]*\)".*/\1/p' package.json | head -n1)
-          echo "new_version=$new_version" >> $GITHUB_OUTPUT
-
   publish:
-    needs: bump
     runs-on: ubuntu-latest
-    if: needs.bump.outputs.bumped == 'true' || (github.event_name == 'workflow_dispatch' && github.event.inputs.publish_only == 'true')
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v4
 
-      - name: Ensure we have latest main (including bump commit)
-        run: |
-          git fetch origin main --tags
-          git checkout main || git checkout -b main
-          git reset --hard origin/main
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.12.4
+      - name: Update npm
+        run: npm install -g npm@latest
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: |
+          if [ -f pnpm-lock.yaml ]; then
+            corepack enable
+            corepack prepare pnpm@latest --activate
+            pnpm install --frozen-lockfile
+          elif [ -f package-lock.json ]; then
+            npm ci
+          elif [ -f yarn.lock ]; then
+            corepack enable
+            corepack prepare yarn@stable --activate
+            yarn install --frozen-lockfile
+          else
+            npm ci || npm install
+          fi
 
-      - name: Show version to publish
-        run: node -p "require('./package.json').version"
+      - name: Build (if present)
+        run: npm run build --if-present
 
-      - name: Publish to NPM
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm publish --access public
+      - name: Test (if present)
+        run: npm test --if-present
+
+      - name: Publish
+        run: npm publish --access public
