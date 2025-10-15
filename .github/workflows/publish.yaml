@@ -1,26 +1,40 @@
 name: Publish Package
+
 on:
   push:
     tags:
       - 'v*'
+
 permissions:
+  id-token: write  # Required for OIDC
   contents: read
-  id-token: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      # Setup Node with registry-url for OIDC
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
-          always-auth: true
+
+      # Upgrade npm to latest (OIDC requires >=11.5.1)
+      - name: Update npm
+        run: npm install -g npm@latest
+
+      # Setup pnpm
       - name: Setup pnpm
         run: |
           corepack enable
           corepack prepare pnpm@latest --activate
+
+      # Install deps using pnpm (uses pnpm-lock.yaml)
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Publish (OIDC)
+
+      # Publish with npm (OIDC only works with npm CLI)
+      - name: Publish
         run: npm publish --access public
