@@ -1,43 +1,27 @@
 name: Publish Package
-
 on:
   push:
     tags:
       - 'v*'
-
 permissions:
-  id-token: write  # Required for OIDC
   contents: read
-
+  id-token: write
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
-
       - name: Setup pnpm
         run: |
           corepack enable
           corepack prepare pnpm@latest --activate
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
       - name: Test (if present)
         run: pnpm test --if-present
-
-      - name: Debug npm auth
-        run: |
-          echo "registry=$(npm config get registry)"
-          echo "NPM_CONFIG_USERCONFIG=$NPM_CONFIG_USERCONFIG"
-          echo "NODE_AUTH_TOKEN present=${NODE_AUTH_TOKEN:+yes}"
-          npm whoami || echo "NOT AUTHENTICATED"
-          sed -E 's/(:_authToken=)[^[:space:]]+/\1REDACTED/g' "$NPM_CONFIG_USERCONFIG" || true
-
       - name: Publish
         run: pnpm publish --no-git-checks --access public
