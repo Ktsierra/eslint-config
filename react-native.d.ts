@@ -4,6 +4,6 @@ import type { Linter } from 'eslint';
  * @param projectPaths - One or more tsconfig paths.
  * @returns An array of ESLint flat config objects.
  */
-declare function reactNativeConfig(projectPaths?: string | string[]): Linter.FlatConfig[];
+declare function reactNativeConfig(projectPaths?: string | string[]): Linter.Config[];
 
 export default reactNativeConfig;

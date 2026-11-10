@@ -4,7 +4,7 @@ import globals from "globals";
 
 /**
  * @param {string|string[]} [projectPaths="./tsconfig.json"] - One or more tsconfig paths.
- * @returns {import('eslint').Linter.FlatConfig[]} An array of ESLint flat config objects.
+ * @returns {import('eslint').Linter.Config[]} An array of ESLint flat config objects.
  */
 export default function reactNativeConfig(projectPaths) {
   return [
