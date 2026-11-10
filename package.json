@@ -84,6 +84,7 @@
     "react.d.ts",
     "react-native.js",
     "react-native.d.ts",
-    "README.md"
+    "README.md",
+    "CHANGELOG.md"
   ]
 }
