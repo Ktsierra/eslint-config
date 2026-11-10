@@ -1,15 +1,16 @@
 import js from "@eslint/js";
+import { defineConfig } from "eslint/config";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
 /**
  * @param {string|string[]} [projectPaths="./tsconfig.json"] - One or more tsconfig paths.
- * @returns {import('eslint').Linter.FlatConfig[]} An array of ESLint flat config objects.
+ * @returns {import('eslint').Linter.Config[]} An array of ESLint flat config objects.
  */
 export default function baseConfig(projectPaths = "./tsconfig.json") {
   const projects = Array.isArray(projectPaths) ? projectPaths : [projectPaths];
 
-  return tseslint.config(
+  return defineConfig(
     { ignores: ["dist", "build", "node_modules"] },
 
     {

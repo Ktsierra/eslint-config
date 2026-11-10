@@ -19,7 +19,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Update npm
@@ -33,6 +33,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Test
+        run: pnpm test
+
       - name: Get latest commit message
         id: commit
         run: |
@@ -42,11 +45,12 @@ jobs:
 
       - name: Determine version bump type
         id: bump
+        env:
+          COMMIT_MESSAGE: ${{ steps.commit.outputs.msg }}
         run: |
-          msg="${{ steps.commit.outputs.msg }}"
-          if [[ "$msg" =~ "#major" ]]; then
+          if [[ "$COMMIT_MESSAGE" =~ "#major" ]]; then
             echo "type=major" >> $GITHUB_OUTPUT
-          elif [[ "$msg" =~ "#minor" ]]; then
+          elif [[ "$COMMIT_MESSAGE" =~ "#minor" ]]; then
             echo "type=minor" >> $GITHUB_OUTPUT
           else
             echo "type=patch" >> $GITHUB_OUTPUT
