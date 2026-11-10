@@ -16,9 +16,9 @@ npm install -D @ktsierra/eslint-config@2
 - `@typescript-eslint/eslint-plugin` and `@typescript-eslint/parser` are no longer peer dependencies. The `typescript-eslint` peer range is now `^8.56.0`.
 - New ranges for the optional React peers: `eslint-plugin-react-hooks ^7.1.0` (was `^5.2.0`) and `eslint-plugin-react-refresh ^0.5.1` (was `^0.4.20`).
 - `eslint-plugin-react` and `eslint-plugin-react-native` have no release for ESLint 10, so the config registers them wrapped with `fixupPluginRules` from `@eslint/compat`:
-  - Do not register these two plugins yourself under `react` or `react-native`. ESLint refuses to redefine a plugin name with a different plugin object.
+  - Do not register these two plugins under `react` or `react-native`, either yourself or through another preset that registers them (for example `eslint-plugin-react`'s own `configs.flat.*`). ESLint refuses to redefine a plugin name with a different plugin object.
   - Turning on more `react/*` or `react-native/*` rules in your own config still works.
-  - Installing them shows a peer dependency warning, because neither plugin declares support for ESLint 10.
+  - Neither plugin declares support for ESLint 10: pnpm installs them and prints a peer dependency warning, and npm refuses to install them next to ESLint 10 and stops with `ERESOLVE`. See [Installing with npm](./README.md#installing-with-npm) in the README for the two ways through.
 
 ### Rule changes
 
@@ -26,7 +26,7 @@ npm install -D @ktsierra/eslint-config@2
 - Added for React and React Native projects, from `eslint-plugin-react-hooks` 7 (the React Compiler rules):
   - at `error`: `react-hooks/static-components`, `react-hooks/use-memo`, `react-hooks/preserve-manual-memoization`, `react-hooks/immutability`, `react-hooks/globals`, `react-hooks/refs`, `react-hooks/set-state-in-effect`, `react-hooks/error-boundaries`, `react-hooks/purity`, `react-hooks/set-state-in-render`, `react-hooks/config`, `react-hooks/gating`;
   - at `warn`: `react-hooks/incompatible-library`, `react-hooks/unsupported-syntax`.
-- `eslint-plugin-react-refresh` 0.5 checks higher-order components more strictly, and `connect` is no longer special-cased.
+- `eslint-plugin-react-refresh` 0.5 checks higher-order components more strictly, and `connect` is no longer special-cased. A project that needs it adds `connect` through the `extraHOCs` option of `react-refresh/only-export-components`.
 - No rule was removed, and no rule changed level.
 
 ### Behavior that follows ESLint 10

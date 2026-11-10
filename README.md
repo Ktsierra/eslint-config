@@ -6,6 +6,7 @@ My personal ESLint configurations for TypeScript projects.
 
 - ESLint 10
 - Node.js `^20.19.0 || ^22.13.0 || >=24`
+- TypeScript: a version that `typescript-eslint` supports. `typescript-eslint` 8.72 supports TypeScript 4.8.4 up to, but not including, 6.1. TypeScript 7 is not supported.
 
 Projects still on ESLint 9 should use version 2:
 
@@ -71,81 +72,102 @@ export default [
 
 ## Peer dependencies
 
-Package managers do not install these for you. Install the ones your configuration needs next to `@ktsierra/eslint-config`. `@eslint/js` and `globals` come with the config, so you do not install them yourself.
+npm 7 and later and pnpm install the required peers (`eslint` and `typescript-eslint`) on their own when they are missing. The optional peers, the React plugins, are never installed for you. Listing the required peers in the install line is still worth doing, because it puts their versions in your own `package.json`. `@eslint/js` and `globals` come with the config, so you do not install them yourself.
+
+The install lines leave out `typescript` on purpose: a bare `typescript` installs TypeScript 7 today, and ESLint then fails to load the config. If your project has no TypeScript yet, add a supported version yourself, for example `typescript@6.0`.
 
 ### Base
 
-`eslint`, `typescript-eslint` and `typescript`.
+`eslint` and `typescript-eslint`.
 
 pnpm:
 
 ```bash
-pnpm add -D eslint typescript-eslint typescript
+pnpm add -D eslint typescript-eslint
 ```
 
 npm:
 
 ```bash
-npm install --save-dev eslint typescript-eslint typescript
+npm install --save-dev eslint typescript-eslint
 ```
 
 yarn:
 
 ```bash
-yarn add -D eslint typescript-eslint typescript
+yarn add -D eslint typescript-eslint
 ```
 
 ### React
 
-The base three, plus `eslint-plugin-react`, `eslint-plugin-react-hooks` and `eslint-plugin-react-refresh`.
+The base two, plus `eslint-plugin-react`, `eslint-plugin-react-hooks` and `eslint-plugin-react-refresh`.
 
 pnpm:
 
 ```bash
-pnpm add -D eslint typescript-eslint typescript eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh
+pnpm add -D eslint typescript-eslint eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh
 ```
 
-npm:
+npm (read [Installing with npm](#installing-with-npm) first):
 
 ```bash
-npm install --save-dev eslint typescript-eslint typescript eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh
+npm install --save-dev eslint typescript-eslint eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh
 ```
 
 yarn:
 
 ```bash
-yarn add -D eslint typescript-eslint typescript eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh
+yarn add -D eslint typescript-eslint eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh
 ```
 
 ### React Native
 
-The React six, plus `eslint-plugin-react-native`. The React Native configuration imports the React configuration, so it needs all the React plugins too, including `eslint-plugin-react-refresh`.
+The React five, plus `eslint-plugin-react-native`. The React Native configuration imports the React configuration, so it needs all the React plugins too, including `eslint-plugin-react-refresh`.
 
 pnpm:
 
 ```bash
-pnpm add -D eslint typescript-eslint typescript eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh eslint-plugin-react-native
+pnpm add -D eslint typescript-eslint eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh eslint-plugin-react-native
 ```
 
-npm:
+npm (read [Installing with npm](#installing-with-npm) first):
 
 ```bash
-npm install --save-dev eslint typescript-eslint typescript eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh eslint-plugin-react-native
+npm install --save-dev eslint typescript-eslint eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh eslint-plugin-react-native
 ```
 
 yarn:
 
 ```bash
-yarn add -D eslint typescript-eslint typescript eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh eslint-plugin-react-native
+yarn add -D eslint typescript-eslint eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh eslint-plugin-react-native
 ```
 
 ## Wrapped plugins
 
 `eslint-plugin-react` and `eslint-plugin-react-native` have no release for ESLint 10. The config wraps them with `fixupPluginRules` from `@eslint/compat` so they run on ESLint 10.
 
-- Installing them shows a peer dependency warning, because neither plugin declares support for ESLint 10. The config still works.
-- Do not register these two plugins yourself under `react` or `react-native`. The config already registers them, and ESLint refuses to redefine a plugin name with a different plugin object.
+- Neither plugin declares support for ESLint 10. pnpm installs them and prints a peer dependency warning. npm refuses to install them next to ESLint 10 and stops with `ERESOLVE`; see [Installing with npm](#installing-with-npm). The config itself works on ESLint 10.
+- Do not register these two plugins under `react` or `react-native`, either yourself or through another preset that registers them (for example `eslint-plugin-react`'s own `configs.flat.*`). The config already registers them, and ESLint refuses to redefine a plugin name with a different plugin object.
 - You can still turn on more `react/*` or `react-native/*` rules in your own config.
+
+### Installing with npm
+
+npm stops with `ERESOLVE` because `eslint-plugin-react` and `eslint-plugin-react-native` declare ESLint 9 at most. There are two ways through:
+
+- Before installing, add `overrides` to your `package.json`, with an entry for each of the two plugins your project installs (a React project only needs the `eslint-plugin-react` entry):
+
+  ```json
+  {
+    "overrides": {
+      "eslint-plugin-react": { "eslint": "$eslint" },
+      "eslint-plugin-react-native": { "eslint": "$eslint" }
+    }
+  }
+  ```
+
+  `$eslint` means "the version of `eslint` this project depends on", so `eslint` must be in your project's own dependencies. The install lines above put it there.
+
+- Or pass `--legacy-peer-deps` on every install.
 
 ## Available Configurations
 
