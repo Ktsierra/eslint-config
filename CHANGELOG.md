@@ -46,3 +46,7 @@ npm install -D @ktsierra/eslint-config@2
 ### Fixed
 
 - Under ESLint 10, the config could be handed `@eslint/js` 9 and silently run ESLint 9's recommended rules. `@eslint/js` 10 now ships with the config.
+
+### Known issue
+
+- With TypeScript 6, `eslint --fix-dry-run` can crash with `Cannot read properties of undefined (reading 'includes')`, and so can a script that lints the same file twice in one process when `CI=true`. It comes from typescript-eslint's single-run mode, not from this config. `eslint` and `eslint --fix` are not affected. The workaround is to set `TSESTREE_SINGLE_RUN=false` for that command.

@@ -3,6 +3,12 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { ESLint } from "eslint";
 
+// These tests lint the same fixtures several times in one process. typescript-eslint's
+// "single-run" mode, which it turns on by itself when CI=true, is not built for that: on the
+// second parse of a file it uses a one-file program, which crashes under TypeScript 6.
+// Say explicitly that this is not a single run, so the tests behave the same locally and in CI.
+process.env.TSESTREE_SINGLE_RUN = "false";
+
 export const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 export function fixture(...segments) {
