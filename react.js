@@ -35,7 +35,7 @@ export function reactBaseConfig(projectPaths) {
         "react/prop-types": "off",
         "react/react-in-jsx-scope": "off",
         "react/self-closing-comp": "warn",
-        // TypeScript rules are defined in baseConfig (tseslint.config)
+        // TypeScript rules are defined in baseConfig (index.js)
       },
     },
     ...baseConfig(projectPaths),
@@ -61,7 +61,7 @@ export default function reactConfig(projectPaths) {
           "warn",
           { allowConstantExport: true },
         ],
-        // TypeScript rules are defined in baseConfig (tseslint.config)
+        // TypeScript rules are defined in baseConfig (index.js)
       },
     },
     ...reactBaseConfig(projectPaths),

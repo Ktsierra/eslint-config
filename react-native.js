@@ -21,7 +21,7 @@ export default function reactNativeConfig(projectPaths) {
       },
       rules: {
         ...reactNativePlugin.configs.all.rules,
-        // TypeScript rules are defined in baseConfig (tseslint.config)
+        // TypeScript rules are defined in baseConfig (index.js)
       },
       languageOptions: {
         parserOptions: {

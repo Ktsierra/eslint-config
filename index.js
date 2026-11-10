@@ -1,4 +1,5 @@
 import js from "@eslint/js";
+import { defineConfig } from "eslint/config";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
@@ -9,7 +10,7 @@ import tseslint from "typescript-eslint";
 export default function baseConfig(projectPaths = "./tsconfig.json") {
   const projects = Array.isArray(projectPaths) ? projectPaths : [projectPaths];
 
-  return tseslint.config(
+  return defineConfig(
     { ignores: ["dist", "build", "node_modules"] },
 
     {
