@@ -1,8 +1,14 @@
+import { fixupPluginRules } from "@eslint/compat";
 import baseConfig from "./index.js";
-import react from "eslint-plugin-react";
+import reactPlugin from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import globals from "globals";
+
+// eslint-plugin-react calls rule-context methods that ESLint 10 removed, so
+// the plugin is wrapped. It is wrapped once, at module level, because every
+// config object must share one plugin object.
+const react = fixupPluginRules(reactPlugin);
 
 /**
  * @param {string|string[]} [projectPaths="./tsconfig.json"] - One or more tsconfig paths.
@@ -14,18 +20,18 @@ export function reactBaseConfig(projectPaths) {
       files: ["**/*.{ts,tsx,js,jsx}"],
       settings: {
         react: { version: "detect" },
-        ...react.configs.recommended.settings,
+        ...reactPlugin.configs.recommended.settings,
         ...reactHooks.configs.recommended.settings,
-        ...react.configs["jsx-runtime"].settings,
+        ...reactPlugin.configs["jsx-runtime"].settings,
       },
       plugins: {
         react,
         "react-hooks": reactHooks,
       },
       rules: {
-        ...react.configs.recommended.rules,
+        ...reactPlugin.configs.recommended.rules,
         ...reactHooks.configs.recommended.rules,
-        ...react.configs["jsx-runtime"].rules,
+        ...reactPlugin.configs["jsx-runtime"].rules,
         "react/prop-types": "off",
         "react/react-in-jsx-scope": "off",
         "react/self-closing-comp": "warn",
